@@ -1,7 +1,8 @@
-Next.js webapp
+Next.js webapp with
 
 - Clerk Authentication
-- convex backend
+- Convex backend
+- Stripe payments
 
 app not working with latest version of clerk, ClerkProvider becomes a promise
 

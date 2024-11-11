@@ -6,7 +6,11 @@ export default defineSchema({
     email: v.string(),
     name: v.string(),
     clerkId: v.string(),
-  }).index('byclerkId', ['clerkId']),
+    stripeCustomerId: v.string(),
+    currentSubscriptionId: v.optional(v.id('subscriptions')),
+  })
+    .index('byclerkId', ['clerkId'])
+    .index('by_stripeCustomerId', ['stripeCustomerId']),
 
   courses: defineTable({
     title: v.string(),
@@ -14,4 +18,22 @@ export default defineSchema({
     imageUrl: v.string(),
     price: v.number(),
   }),
+
+  purchases: defineTable({
+    userId: v.id('users'),
+    courseId: v.id('courses'),
+    amount: v.number(),
+    purchaseData: v.number(), //unix timestamp
+    stripePurchaseId: v.string(),
+  }).index('by_userId_and_courseId', ['userId', 'courseId']),
+
+  subscriptions: defineTable({
+    userId: v.id('users'),
+    planType: v.union(v.literal('month'), v.literal('year')),
+    currentPeriodStart: v.number(),
+    currentPeriodEnd: v.number(),
+    stripeSubscriptionId: v.number(),
+    status: v.string(),
+    cancalAtPeriodEnd: v.boolean(),
+  }).index('bystripeSubscriptionId', ['stripeSubscriptionId']),
 });
