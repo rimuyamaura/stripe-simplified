@@ -1,3 +1,10 @@
+Development
+
+```
+bun run dev
+bunx run convex
+```
+
 Next.js webapp with
 
 - Clerk Authentication
