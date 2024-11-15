@@ -23,7 +23,7 @@ export default defineSchema({
     userId: v.id('users'),
     courseId: v.id('courses'),
     amount: v.number(),
-    purchaseData: v.number(), //unix timestamp
+    purchaseDate: v.number(), //unix timestamp
     stripePurchaseId: v.string(),
   }).index('by_userId_and_courseId', ['userId', 'courseId']),
 
