@@ -1,7 +1,7 @@
 'use client';
 
 import { useUser } from '@clerk/nextjs';
-import { useQuery } from 'convex/react';
+import { useAction, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { PRO_PLANS } from '@/constants';
 import {
@@ -15,6 +15,7 @@ import {
 import { Check, Loader2Icon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const ProPage = () => {
   const [loadingPlan, setLoadingPlan] = useState('');
@@ -32,8 +33,39 @@ const ProPage = () => {
   const isYearlySubscriptionActive =
     userSubscription?.status === 'active' &&
     userSubscription.planType === 'year';
+  const createProPlanCheckoutSession = useAction(
+    api.stripe.createProPlanCheckoutSession
+  );
 
-  const handlePlanSelection = async (planId: string) => {};
+  const handlePlanSelection = async (planId: 'month' | 'year') => {
+    if (!user) {
+      toast.error('Please log in to select a plan.', {
+        id: 'login-error',
+        position: 'top-center',
+        duration: 3000,
+      });
+      return;
+    }
+
+    setLoadingPlan(planId);
+    try {
+      const result = await createProPlanCheckoutSession({ planId });
+      if (result.checkoutUrl) {
+        window.location.href = result.checkoutUrl;
+      }
+    } catch (error: any) {
+      if (error.message.includes('Rate limit exceeded')) {
+        toast.error("You've tried too many times. Please try again later.");
+      } else {
+        toast.error(
+          'There was an error initiating your purchase. Please try again.'
+        );
+      }
+      console.log(error);
+    } finally {
+      setLoadingPlan('');
+    }
+  };
 
   return (
     <div className='container mx-auto px-4 py-16 max-w-6xl h-screen'>
