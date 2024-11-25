@@ -32,8 +32,8 @@ export default defineSchema({
     planType: v.union(v.literal('month'), v.literal('year')),
     currentPeriodStart: v.number(),
     currentPeriodEnd: v.number(),
-    stripeSubscriptionId: v.number(),
+    stripeSubscriptionId: v.string(),
     status: v.string(),
-    cancalAtPeriodEnd: v.boolean(),
-  }).index('bystripeSubscriptionId', ['stripeSubscriptionId']),
+    cancelAtPeriodEnd: v.boolean(),
+  }).index('by_stripeSubscriptionId', ['stripeSubscriptionId']),
 });
