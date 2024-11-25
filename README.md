@@ -3,6 +3,7 @@ Development
 ```
 bun run dev
 bunx run convex
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
 ```
 
 Next.js webapp with
