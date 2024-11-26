@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} relative antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen relative antialiased`}
       >
         <ConvexClientProvider>
           <div className='absolute top-0 -z-10 h-full w-full bg-white'>
