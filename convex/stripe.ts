@@ -20,7 +20,7 @@ export const createCheckoutSession = action({
       throw new ConvexError('User not found');
     }
 
-    // TODO: Implement rate limiting to prevent backend flooding
+    // Implement rate limiting to prevent backend flooding
     const rateLimitKey = `checkout-rate-limit:${user._id}`;
     const { success } = await ratelimit.limit(rateLimitKey);
     if (!success) {
