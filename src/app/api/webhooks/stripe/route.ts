@@ -3,6 +3,9 @@ import stripe from '@/lib/stripe';
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '../../../../../convex/_generated/api';
 import { Id } from '../../../../../convex/_generated/dataModel';
+import resend from '@/lib/resend';
+import PurchaseConfirmationEmail from '@/emails/PurchaseConfirmationEmail';
+import ProPlanActivatedEmail from '@/emails/ProPlanActivatedEmail';
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -80,7 +83,26 @@ async function handleCheckoutSessionCompleted(
     stripePurchaseId: session.id,
   });
 
-  // TODO: send purchase success email
+  // send purchase success email
+  if (
+    session.metadata &&
+    session.metadata.courseTitle &&
+    session.metadata.courseImageUrl &&
+    process.env.NODE_ENV === 'development'
+  ) {
+    await resend.emails.send({
+      from: 'StripeSimplified <onboarding@resend.dev>',
+      to: user.email,
+      subject: 'Purchase Confirmation',
+      react: PurchaseConfirmationEmail({
+        customerName: user.name,
+        courseTitle: session.metadata?.courseTitle,
+        courseImage: session.metadata?.courseImageUrl,
+        courseUrl: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${courseId}`,
+        purchaseAmount: session.amount_total! / 100,
+      }),
+    });
+  }
 }
 
 async function handleSubscriptionUpsert(
@@ -119,7 +141,22 @@ async function handleSubscriptionUpsert(
       `Successfully processed ${eventType} for subscription ${subscription.id}`
     );
 
-    // TODO: send subscription success email
+    // send subscription success email
+    const isCreation = eventType === 'customer.subscription.created';
+    if (isCreation && process.env.NODE_ENV === 'development') {
+      await resend.emails.send({
+        from: 'StripeSimplified <onboarding@resend.dev>',
+        to: user.email,
+        subject: 'Welcome to StripeSimplified Pro!',
+        react: ProPlanActivatedEmail({
+          name: user.name,
+          planType: subscription.items.data[0].plan.interval,
+          currentPeriodStart: subscription.current_period_start,
+          currentPeriodEnd: subscription.current_period_end,
+          url: process.env.NEXT_PUBLIC_APP_URL!,
+        }),
+      });
+    }
   } catch (error) {
     console.error(
       `Error processing ${eventType} for subscription ${subscription.id}:`,
