@@ -19,7 +19,11 @@ import {
   Lock,
 } from 'lucide-react';
 
-const page = ({ params }: { params: { courseId: Id<'courses'> } }) => {
+const CourseDetailPage = ({
+  params,
+}: {
+  params: { courseId: Id<'courses'> };
+}) => {
   const { user, isLoaded: isUserLoaded } = useUser();
   const userData = useQuery(api.users.getUserByClerkId, {
     clerkId: user?.id ?? '',
@@ -107,7 +111,7 @@ const page = ({ params }: { params: { courseId: Id<'courses'> } }) => {
   );
 };
 
-export default page;
+export default CourseDetailPage;
 
 function CourseDetailSkeleton() {
   return (
