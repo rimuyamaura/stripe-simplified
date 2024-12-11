@@ -14,6 +14,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight } from 'lucide-react';
 import PurchaseButton from '@/components/PurchaseButton';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Stripe Simplified',
+};
 
 export default async function Home() {
   const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
