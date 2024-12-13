@@ -63,7 +63,7 @@ const clerkWebhook = httpAction(async (ctx, request) => {
         stripeCustomerId: customer.id,
       });
 
-      // send welcome email (development only)
+      // send welcome email
       if (process.env.NODE_END === 'development') {
         await resend.emails.send({
           from: 'StripeSimplified <onboarding@resend.dev>',

@@ -83,15 +83,15 @@ async function handleCheckoutSessionCompleted(
     stripePurchaseId: session.id,
   });
 
-  // send purchase success email (development only)
+  // send purchase success email
   if (
     session.metadata &&
     session.metadata.courseTitle &&
     session.metadata.courseImageUrl &&
-    process.env.NODE_ENV === 'development' // only send emails in development
+    process.env.NODE_ENV === 'development'
   ) {
     await resend.emails.send({
-      from: 'StripeSimplified <onboarding@resend.dev>', // need own domain to send emails in production using resend
+      from: 'StripeSimplified <onboarding@resend.dev>',
       to: user.email,
       subject: 'Purchase Confirmation',
       react: PurchaseConfirmationEmail({
@@ -141,7 +141,7 @@ async function handleSubscriptionUpsert(
       `Successfully processed ${eventType} for subscription ${subscription.id}`
     );
 
-    // send subscription success email (development only)
+    // send subscription success email
     const isCreation = eventType === 'customer.subscription.created';
     if (isCreation && process.env.NODE_ENV === 'development') {
       await resend.emails.send({
